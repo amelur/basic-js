@@ -1,4 +1,4 @@
-const { NotImplementedError } = require('../lib');
+const {NotImplementedError} = require('../lib');
 
 /**
  * Implement class VigenereCipheringMachine that allows us to create
@@ -20,19 +20,64 @@ const { NotImplementedError } = require('../lib');
  *
  */
 class VigenereCipheringMachine {
-  encrypt() {
-    // Remove line below and write your code here
-    throw new NotImplementedError('Not implemented');
-  }
+    constructor(type = true) {
+        this.type = type;
+    }
 
-  decrypt() {
-    // Remove line below and write your code here
-    throw new NotImplementedError('Not implemented');
-  }
+    encrypt(message, key) {
+        if (message === undefined || key === undefined) {
+            throw new Error('Incorrect arguments!');
+        }
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const messageUpper = message.toUpperCase();
+        const keyUpper = key.toUpperCase();
+        let result = '';
+        let keyIndex = 0;
+        for (let i = 0; i < messageUpper.length; i++) {
+            if (alphabet.indexOf(messageUpper[i]) === -1) {
+                result += messageUpper[i];
+            } else {
+                const messageIndex = alphabet.indexOf(messageUpper[i]);
+                const keyChar = keyUpper[keyIndex % keyUpper.length];
+                const keyIndexInAlphabet = alphabet.indexOf(keyChar);
+                const encryptedCharIndex =
+                    (messageIndex + keyIndexInAlphabet) % alphabet.length;
+                result += alphabet[encryptedCharIndex];
+                keyIndex++;
+            }
+        }
+        return this.type ? result : result.split('').reverse().join('');
+    }
+
+    decrypt(message, key) {
+        if (message === undefined || key === undefined) {
+            throw new Error('Incorrect arguments!');
+        }
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const messageUpper = message.toUpperCase();
+        const keyUpper = key.toUpperCase();
+        let result = '';
+        let keyIndex = 0;
+        for (let i = 0; i < messageUpper.length; i++) {
+            if (alphabet.indexOf(messageUpper[i]) === -1) {
+                result += messageUpper[i];
+            } else {
+                const messageIndex = alphabet.indexOf(messageUpper[i]);
+                const keyChar = keyUpper[keyIndex % keyUpper.length];
+                const keyIndexInAlphabet = alphabet.indexOf(keyChar);
+                const encryptedCharIndex =
+                    (messageIndex + alphabet.length - keyIndexInAlphabet) %
+                    alphabet.length;
+                result += alphabet[encryptedCharIndex];
+                keyIndex++;
+            }
+        }
+        return this.type ? result : result.split('').reverse().join('');
+    }
 }
 
 module.exports = {
-  directMachine: new VigenereCipheringMachine(),
-  reverseMachine: new VigenereCipheringMachine(false),
-  VigenereCipheringMachine,
+    directMachine: new VigenereCipheringMachine(),
+    reverseMachine: new VigenereCipheringMachine(false),
+    VigenereCipheringMachine,
 };
